@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport">
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, please refer to the docs:
+            https://cordova.apache.org/docs/en/latest/
+        Some notes:
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <link rel="stylesheet" href="css/index.css">
+        <title>Scale Closed Captioning</title>
+    </head>
+    <body>
+        <img class="logo" src="img/scaleLogo.png" alt="Scale Logo">
+        <table class="center">
+            <tbody>
+                <tr>
+                    <td>
+                        <select class="" style="margin: 0 auto; display: block; font-size:24px;">
+                            <option value="None">Select Room</option>
+                            <option value="Ballroom A">Ballroom A</option>
+                            <option value="Ballroom B">Ballroom B</option>
+                            <option value="Ballroom C">Ballroom C</option>
+                            <option value="Ballroom DE">Ballroom DE</option>
+                            <option value="Ballroom F">Ballroom F</option>
+                            <option value="Ballroom G">Ballroom G</option>
+                            <option value="Ballroom H">Ballroom H</option>
+                            <option value="Room 101">Room 101</option>
+                            <option value="Room 103">Room 103</option>
+                            <option value="Room 104">Room 104</option>
+                            <option value="Room 105">Room 105</option>
+                            <option value="Room 106">Room 106</option>
+                            <option value="Room 107">Room 107</option>
+                            <option value="Room 209">Room 209</option>
+                            <option value="Room 211">Room 211</option>
+                            <option value="Room 212">Room 212</option>
+                        </select>
+                    </td>
+
+                    <td>
+                        <select id="fontSizeList" style="margin: 0 auto; display: block; font-size:24px;">
+                            <option value="0">Font Size</option>
+                            <option value="8">Small</option>
+                            <option value="12">12</option>
+                            <option value="24">24</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="closedCaptions" >
+            Test Test
+        </div>
+
+        
+            
+        <script src="cordova.js"></script>
+        <script src="js/index.js"></script>
+    </body>
+</html>
