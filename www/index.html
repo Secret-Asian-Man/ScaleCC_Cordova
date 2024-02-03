@@ -44,7 +44,7 @@
                 <tr>
                     <td>
                         <select class="" style="margin: 0 auto; display: block; font-size:24px;">
-                            <option value="None">Select Room</option>
+                            <option value="">Select Room</option>
                             <option value="Ballroom A">Ballroom A</option>
                             <option value="Ballroom B">Ballroom B</option>
                             <option value="Ballroom C">Ballroom C</option>
@@ -65,17 +65,21 @@
                     </td>
 
                     <td>
-                        <select id="fontSizeList" style="margin: 0 auto; display: block; font-size:24px;">
-                            <option value="0">Font Size</option>
-                            <option value="8">Small</option>
-                            <option value="12">12</option>
-                            <option value="24">24</option>
+                        <select id="fontSizeList" onchange="changeSize()" style="margin: 0 auto; display: block; font-size:24px;">
+                            <option value="medium">Font Size</option>
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                            <option value="x-large">XL</option>
+                            <option value="xx-large">XXL</option>
+                            <option value="xxx-large">XXXL</option>
+
                         </select>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <div id="closedCaptions" >
+        <div id="closedCaptions">
             Test Test
         </div>
 

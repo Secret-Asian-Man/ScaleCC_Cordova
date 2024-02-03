@@ -29,14 +29,7 @@ function onDeviceReady() {
     document.getElementById('deviceready').classList.add('ready');
 }
 
-// function fontSizer(prop){
-//     var element=document.getElementById('captions');
-//     element.style.fontSize = prop.value + 'px';
-// }
-
-function changeSize(n) {
-    var s = document.getElementById('demo');
-    s.style.fontSize = n.value + 'px'
-    console.log(n.value)
+function changeSize() {
+    document.getElementById('closedCaptions').style.fontSize = document.getElementById("fontSizeList").value; 
 }
 
