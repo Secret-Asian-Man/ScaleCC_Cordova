@@ -21,14 +21,6 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport">
-        <!--
-        Customize this policy to fit your own app's needs. For more guidance, please refer to the docs:
-            https://cordova.apache.org/docs/en/latest/
-        Some notes:
-            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-                * Enable inline JS: add 'unsafe-inline' to default-src
-        -->
         <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
@@ -73,7 +65,6 @@
                             <option value="x-large">XL</option>
                             <option value="xx-large">XXL</option>
                             <option value="xxx-large">XXXL</option>
-
                         </select>
                     </td>
                 </tr>
@@ -82,10 +73,6 @@
         <div id="closedCaptions">
             Test Test
         </div>
-
-        
-            
-        <script src="cordova.js"></script>
         <script src="js/index.js"></script>
     </body>
 </html>
