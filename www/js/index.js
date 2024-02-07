@@ -20,6 +20,28 @@
 document.getElementById('fontSizeList').addEventListener('change', changeSize, false);
 
 function changeSize() {
-    document.getElementById('closedCaptions').style.fontSize = document.getElementById("fontSizeList").value; 
+    var fontSize = document.getElementById('fontSizeList').value;
+    if (fontSize == '') return;
+
+    document.getElementById('closedCaptions').style.fontSize = fontSize; 
 }
 
+// function to change text of closedCaptions with text from REST API and the room selection from roomList
+function getClosedCaptions() {
+    var room = document.getElementById('roomList').value;
+    if (room == '') {
+        document.getElementById('closedCaptions').innerHTML = '';
+        return;
+    }
+
+    var url = 'https://RESTAPI.com/data/' + room + '/texttospeech';
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            var data = JSON.parse(request.responseText);
+            document.getElementById('closedCaptions').innerHTML = data.text;
+        }
+    };
+    request.send();
+}
