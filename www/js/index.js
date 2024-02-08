@@ -16,25 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+var roomSelection = '';
 
 document.getElementById('fontSizeList').addEventListener('change', changeSize, false);
+document.getElementById('roomList').addEventListener('change', changeRoom, false);
 
 function changeSize() {
     var fontSize = document.getElementById('fontSizeList').value;
     if (fontSize == '') return;
 
-    document.getElementById('closedCaptions').style.fontSize = fontSize; 
+    document.getElementById('closedCaptions').style.fontSize = fontSize;
 }
 
-// function to change text of closedCaptions with text from REST API and the room selection from roomList
-function getClosedCaptions() {
-    var room = document.getElementById('roomList').value;
-    if (room == '') {
-        document.getElementById('closedCaptions').innerHTML = '';
-        return;
-    }
+function changeRoom() {
+    roomSelection = document.getElementById('roomList').value;
+    if (roomSelection == '') return;
 
-    var url = 'https://RESTAPI.com/data/' + room + '/texttospeech';
+    getClosedCaptions();
+}
+
+function getClosedCaptions() {
+    var url = 'https://RESTAPI.com/data/' + roomSelection + '/texttospeech';
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.onload = function() {
