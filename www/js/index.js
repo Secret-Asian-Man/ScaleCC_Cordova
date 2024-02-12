@@ -16,34 +16,49 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var roomSelection = '';
+let intervalId = null;
 
 document.getElementById('fontSizeList').addEventListener('change', changeSize, false);
 document.getElementById('roomList').addEventListener('change', changeRoom, false);
 
 function changeSize() {
-    var fontSize = document.getElementById('fontSizeList').value;
+    let fontSize = document.getElementById('fontSizeList').value;
     if (fontSize == '') return;
 
     document.getElementById('closedCaptions').style.fontSize = fontSize;
 }
 
 function changeRoom() {
-    roomSelection = document.getElementById('roomList').value;
-    if (roomSelection == '') return;
+    let roomSelection = document.getElementById('roomList').value;
 
-    getClosedCaptions();
+    startClosedCaptioning(roomSelection);
 }
 
-function getClosedCaptions() {
-    var url = 'https://RESTAPI.com/data/' + roomSelection + '/texttospeech';
-    var request = new XMLHttpRequest();
+function getClosedCaptions(roomSelection) {
+    roomSelection = roomSelection.replace(/ /g, '_').toLowerCase();
+    let url = '/room/' + roomSelection + '/latest';
+    let request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
-            var data = JSON.parse(request.responseText);
+            let data = JSON.parse(request.responseText);
             document.getElementById('closedCaptions').innerHTML = data.text;
+        }
+        else {
+            document.getElementById('closedCaptions').innerHTML = 'An error occured.';
         }
     };
     request.send();
+}
+
+function startClosedCaptioning(roomSelection) {
+    if (intervalId != null) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+
+    if (roomSelection == '') return;
+
+    getClosedCaptions(roomSelection);
+    intervalId = setInterval(getClosedCaptions.bind(undefined,roomSelection), 3000);
 }
