@@ -1,0 +1,29 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+    # Repeated www intended
+	root /var/www/scalecc/www;
+
+	# Add Cordova index.html
+	index index.html;
+
+	server_name _;
+
+    # URL must begin with the prefix /room not using regex
+    location /room {
+        proxy_pass http://127.0.0.1:8000/room;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Prefix /;
+    }
+
+	location / {
+		# First attempt to serve request as file, then
+		# as directory, then fall back to displaying a 404.
+		try_files $uri $uri/ =404;
+	}
+
+
+}

@@ -1,0 +1,74 @@
+#!/bin/bash
+
+# Install constants
+REPO_LOCATION="https://github.com/Secret-Asian-Man/ScaleCC_Cordova.git"
+INSTALL_LOCATION="/var/www/scalecc"
+LOG_LOCATION="/var/log"
+VENV_LOCATION="${INSTALL_LOCATION}/venv"
+ERROR_CODE=1
+
+# Pre-install checks: root
+if [ "$EUID" -ne 0 ]; then
+    echo "[ERROR] Install must be run as root" 1>&2
+    exit ${ERROR_CODE}
+fi
+
+# Installing required apt packages
+echo "[INFO] Installing 'git', 'nginx', and 'python' packages"
+if ! apt update -qq && \
+     apt install -qq --yes --force-yes \
+         git nginx python3 python3-pip python3-venv; then
+    echo "[ERROR] Failed to install apt packages" 1>&2
+    exit ${ERROR_CODE}
+fi
+
+# Check resulting conditions of the installation
+if ! id "www-data" >/dev/null 2>&1; then
+    echo "[ERROR] 'www-data' user must exist" 1>&2
+    exit ${ERROR_CODE}
+fi
+
+# Clone the repository
+if [ -d "${INSTALL_LOCATION}" ]; then
+    echo "[INFO] ${INSTALL_LOCATION} exists, skipping"
+elif ! git clone "${REPO_LOCATION}" "${INSTALL_LOCATION}"; then
+    echo "[ERROR] Failed to clone repository" 1>&2
+    exit ${ERROR_CODE}
+fi
+# Create virtual environment
+if [ -d "${VENV_LOCATION}" ]; then
+    echo "[INFO] ${VENV_LOCATION} exists, skipping"
+elif ! python3 -m venv "${VENV_LOCATION}"; then
+    echo "[ERROR] Failed to setup python3 virtual environment" 1>&2
+    exit ${ERROR_CODE}
+fi
+. ${VENV_LOCATION}/bin/activate
+
+# Configure virtual environment
+if ! pip install -qr "${INSTALL_LOCATION}/requirements.txt"; then
+    echo "[ERROR] Failed to setup python3 virtual environment" 1>&2
+    exit ${ERROR_CODE}
+fi
+
+# Change ownership of items
+if ! chgrp -R www-data "${INSTALL_LOCATION}"; then
+    echo "[ERROR] Failed to setup python3 virtual environment" 1>&2
+    exit ${ERROR_CODE}
+fi
+# Link in site definition
+if ! ln -fs ${INSTALL_LOCATION}/conf/nginx-site \
+            /etc/nginx/sites-enabled/default; then
+    echo "[ERROR] Failed to link nginx site" 1>&2
+    exit ${ERROR_CODE}
+fi
+
+mkdir -p "${LOG_LOCATION}/gunicorn" && chown www-data:www-data "${LOG_LOCATION}/gunicorn"
+
+# Link in systemd configurations
+for service in "${INSTALL_LOCATION}/conf/"*".service"
+do
+    ln -fs "${service}" /etc/systemd/system/
+    systemctl daemon-reload
+    systemctl enable "`basename "${service}"`"
+    systemctl start "`basename "${service}"`"
+done

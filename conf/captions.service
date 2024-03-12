@@ -1,0 +1,19 @@
+[Unit]
+Description=Captions instance to serve application
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/scalecc/
+Environment="PYTHONPATH=/var/www/scalecc/"
+Environment="VIRTUAL_ENV=/var/www/scalecc/venv/"
+Environment="PATH=/var/www/scalecc/venv/bin"
+ExecStart=/var/www/scalecc/venv/bin/python -m scale_av_cc.rectifier
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

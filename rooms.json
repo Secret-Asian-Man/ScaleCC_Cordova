@@ -1,0 +1,6 @@
+[
+    {
+        "room": "room_101",
+        "uri": "tcp://localhost:7500"
+    }
+]

@@ -1,13 +1,22 @@
 import json
+import logging
+import zmq
 from pathlib import Path
 from flask import Flask
-from .data import RandomData
-from .zmq import ZmqData
+from .constants import LOCAL_ADDRESS
+
+logging.getLogger().setLevel(logging.INFO)
+logging.info("Logging system initialized!")
+
+LOGGER = logging.getLogger(__name__)
+
 ROOM_DATA_OBJECTS = {}
 
 STATIC_FILES_FOLDER = Path(__file__).parent.parent / 'www'
 app = Flask(__name__, static_url_path='', static_folder=STATIC_FILES_FOLDER)
 app.config.from_prefixed_env()
+
+context = zmq.Context()
 
 @app.route('/')
 def index():
@@ -16,15 +25,21 @@ def index():
 
 @app.route('/room/<room_id>/latest', methods=['GET'])
 def get_room_latest(room_id):
-    room_data = get_room_handler(room_id)
+    socket = context.socket(zmq.REQ)
+    try:
+        socket.setsockopt(zmq.CONNECT_TIMEOUT, 100)
+        LOGGER.info("Connecting to: %s", LOCAL_ADDRESS)
+        socket.connect(LOCAL_ADDRESS)
+        socket.send_string(room_id)
+        latest = socket.recv_string()
+    except zmq.ZMQError as exc:
+        LOGGER.warn("Error occurred: %s", str(exc))
+        latest = str(exc)
+    finally:
+        socket.close()
     return json.dumps(
-        room_data.get_latest()
+        {
+            'room': room_id,
+            'text': latest
+        }
     )
-
-def get_room_handler(room_id):
-    ''' Get the room handler for a given room id '''
-    ROOM_DATA_OBJECTS[room_id] = ROOM_DATA_OBJECTS.get(room_id, get_new_handler(room_id))
-    return ROOM_DATA_OBJECTS[room_id]
-
-def get_new_handler(room_id):
-    return RandomData(room_id) if app.config.get('HANDLER', None) == 'RandomData' else ZmqData(room_id)
