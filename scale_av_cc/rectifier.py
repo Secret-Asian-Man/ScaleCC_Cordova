@@ -40,7 +40,7 @@ def loop(rooms):
                 try:
                     logging.info("Subscribing to '%s' from '%s'", uri, name)
                     socket.setsockopt_string(zmq.SUBSCRIBE, name)
-                    socket.connect(uri)
+                    socket.bind(uri)
                 except zmq.ZMQError:
                     logging.warning("Failed to subscribe '%s' from '%s'", uri, name)
 
