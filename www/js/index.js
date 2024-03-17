@@ -85,5 +85,5 @@ function startClosedCaptioning(roomSelection) {
     if (roomSelection == '') return;
 
     getClosedCaptions(roomSelection);
-    intervalId = setInterval(getClosedCaptions.bind(undefined,roomSelection), 3000);
+    intervalId = setInterval(getClosedCaptions.bind(undefined,roomSelection), 500);
 }

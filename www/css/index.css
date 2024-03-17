@@ -61,9 +61,10 @@ body {
 }
 
 .ccText {
+    word-wrap: break-word;
     color: #f0f0f0;
     /*font-weight: bold;*/
     text-align: center;
-
-    padding: 50px;
+    margin: 1em;
+    padding: 1em;
 }
