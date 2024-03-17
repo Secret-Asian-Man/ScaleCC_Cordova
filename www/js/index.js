@@ -61,16 +61,19 @@ function getClosedCaptions(roomSelection) {
 }
 
 function drawCaptions() {
+    let buffer = '';
     for (let i = 0; i < dataHistory.length; i++) {
-        dataText = dataHistory[i];
+        let dataText = dataHistory[i];
 
         // highlight last element
         if (i == dataHistory.length - 1) {
             dataText = '<b>' + dataText + '</b>';
         }
-        document.getElementById('closedCaptions').innerHTML = dataText;
-        document.getElementById('closedCaptions').innerHTML += '<br>';
+        buffer += dataText;
+        buffer += '<br>';
     }
+
+    document.getElementById('closedCaptions').innerHTML = buffer;
 }
 
 function startClosedCaptioning(roomSelection) {
