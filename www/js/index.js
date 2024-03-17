@@ -17,6 +17,7 @@
  * under the License.
  */
 let intervalId = null;
+let dataHistory = [];
 
 document.getElementById('fontSizeList').addEventListener('change', changeSize, false);
 document.getElementById('roomList').addEventListener('change', changeRoom, false);
@@ -41,14 +42,35 @@ function getClosedCaptions(roomSelection) {
     request.open('GET', url, true);
     request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
-            let data = JSON.parse(request.responseText);
-            document.getElementById('closedCaptions').innerHTML = data.text;
+            data = JSON.parse(request.responseText);
+            if (data.text != dataHistory[dataHistory.length-1]) {
+                dataHistory.push(data.text);
+            }
+
+            if (dataHistory.length > 5) {
+                dataHistory.shift();
+            }
+            
+            drawCaptions();
         }
         else {
             document.getElementById('closedCaptions').innerHTML = 'An error occured.';
         }
     };
     request.send();
+}
+
+function drawCaptions() {
+    for (let i = 0; i < dataHistory.length; i++) {
+        dataText = dataHistory[i];
+
+        // highlight last element
+        if (i == dataHistory.length - 1) {
+            dataText = '<b>' + dataText + '</b>';
+        }
+        document.getElementById('closedCaptions').innerHTML = dataText;
+        document.getElementById('closedCaptions').innerHTML += '<br>';
+    }
 }
 
 function startClosedCaptioning(roomSelection) {
