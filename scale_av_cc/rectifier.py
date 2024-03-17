@@ -6,7 +6,7 @@ from .constants import REQUEST_ADDRESS, PUBLISH_ADDRESS
 
 import zmq
 
-logging.getLogger().setLevel(logging.INFO)
+logging.getLogger().setLevel(logging.DEBUG)
 logging.info("Logging system initialized!")
 
 LOGGER = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ context = zmq.Context()
 
 def run():
     """ Run the thread accepting connections """
-    LOGGER.info("Binding to %s", REQUEST_ADDRESS)
+    LOGGER.info("Binding requests to: %s", REQUEST_ADDRESS)
     socket = context.socket(zmq.REP)
     socket.bind(REQUEST_ADDRESS)
     while RUNNING:
@@ -35,6 +35,7 @@ def loop(rooms):
     global RUNNING
     global LATEST
     socket = context.socket(zmq.SUB)
+    logging.info("Binding publish to: %s", PUBLISH_ADDRESS)
     socket.bind(PUBLISH_ADDRESS)
     while True:
         for room in rooms:

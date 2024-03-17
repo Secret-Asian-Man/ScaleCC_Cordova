@@ -28,8 +28,9 @@ def get_room_latest(room_id):
     socket = context.socket(zmq.REQ)
     try:
         socket.setsockopt(zmq.CONNECT_TIMEOUT, 100)
-        LOGGER.info("Connecting to: %s", REQUEST_ADDRESS)
-        socket.connect(REQUEST_ADDRESS)
+        request = REQUEST_ADDRESS.replace("0.0.0.0", "127.0.0.1")
+        LOGGER.info("Connecting to: %s", request)
+        socket.connect(request)
         socket.send_string(room_id)
         latest = socket.recv_string()
     except zmq.ZMQError as exc:
