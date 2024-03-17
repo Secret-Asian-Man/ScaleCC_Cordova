@@ -9,8 +9,8 @@ if __name__ == '__main__':
     publish = PUBLISH_ADDRESS.replace("0.0.0.0", "127.0.0.1")
     print(f"[INFO] Connecting to: {publish}")
     socket.connect(publish)
+    room = input('Room: ').strip().lower()
     while True:
-        room = input('Room: ')
         text = input('Text: ')
         print(f'{room} {text}')
         socket.send_string(f'{room} {text}')
