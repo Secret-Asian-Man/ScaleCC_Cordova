@@ -1,8 +1,17 @@
 #!/bin/bash
-gst-launch-1.0 rtspsrc location="rtsp://localhost:12345" ! \
+DIR="$(cd $(dirname $BASH_SOURCE)/..; pwd)"
+
+if [ $# -ne 1 ]
+then
+    echo "[ERROR] Please supply room" 1>&2
+    exit 1
+fi
+ROOM="$1"
+
+export GST_PLUGIN_PATH="${DIR}/../gst-plugins-rs/target/release:${DIR}/:$GST_PLUGIN_PATH"
+gst-launch-1.0 rtspsrc location="rtsp://${ROOM}-cam/1" ! \
     decodebin ! \
     queue ! \
     audioconvert ! \
     awstranscriber access-key="---" secret-access-key="---" ! \
-    fakesink sync=true dump=true | \
-    python3
+    zmqtextsink location="tcp://0.0.0.0:4040" room="${ROOM}"

@@ -35,7 +35,7 @@ function changeRoom() {
 }
 
 function getClosedCaptions(roomSelection) {
-    roomSelection = roomSelection.replace(/ /g, '_').toLowerCase();
+    roomSelection = roomSelection.replace(/ /g, '-').toLowerCase();
     let url = '/room/' + roomSelection + '/latest';
     let request = new XMLHttpRequest();
     request.open('GET', url, true);

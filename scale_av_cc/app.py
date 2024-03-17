@@ -3,7 +3,7 @@ import logging
 import zmq
 from pathlib import Path
 from flask import Flask
-from .constants import LOCAL_ADDRESS
+from .constants import REQUEST_ADDRESS
 
 logging.getLogger().setLevel(logging.INFO)
 logging.info("Logging system initialized!")
@@ -28,8 +28,8 @@ def get_room_latest(room_id):
     socket = context.socket(zmq.REQ)
     try:
         socket.setsockopt(zmq.CONNECT_TIMEOUT, 100)
-        LOGGER.info("Connecting to: %s", LOCAL_ADDRESS)
-        socket.connect(LOCAL_ADDRESS)
+        LOGGER.info("Connecting to: %s", REQUEST_ADDRESS)
+        socket.connect(REQUEST_ADDRESS)
         socket.send_string(room_id)
         latest = socket.recv_string()
     except zmq.ZMQError as exc:

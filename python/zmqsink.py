@@ -15,9 +15,11 @@
 #
 #  $ export GST_PLUGIN_PATH=$GST_PLUGIN_PATH:$PWD/plugin:$PWD/examples/plugins
 #  $ GST_DEBUG=python:4 gst-launch-1.0 fakesrc num-buffers=10 ! mysink
+import gi
 import platform
 import sys
 import zmq
+gi.require_version('GstBase', '1.0')
 
 from gi.repository import Gst, GObject, GstBase
 Gst.init(None)
@@ -35,6 +37,12 @@ class ZmqTextSink(GstBase.BaseSink):
                  "tcp://location:9500",
                  GObject.ParamFlags.READWRITE
                  ),
+        "room": (GObject.TYPE_STRING,
+                     "Room",
+                     "Room to set captions for",
+                     "room-101",
+                     GObject.ParamFlags.READWRITE
+                     ),
     }
 
     __gsttemplates__ = Gst.PadTemplate.new("sink",
@@ -44,7 +52,9 @@ class ZmqTextSink(GstBase.BaseSink):
 
     def __init__(self):
         """ Construct this function """
+        self.room = platform.node()
         self.location = None
+        self.socket = None
 
     def do_start(self):
         """ Start the pipeline """
@@ -52,8 +62,10 @@ class ZmqTextSink(GstBase.BaseSink):
             print("[ERROR] User must set location of ZMQ server", file=sys.stderr)
             return False
         try:
-            socket = context.socket(zmq.PUB)
-            socket.connect(self.location)
+            print(f"[INFO] Connecting to: {self.location}")
+            self.socket = context.socket(zmq.PUB)
+            self.socket.connect(self.location)
+            print(f"[DEBUG] Connected to: {self.location}")
         except Exception as exc:
             print(f"[ERROR] Failed to connect to zmq: {exc}", file=sys.stderr)
             return False
@@ -63,14 +75,18 @@ class ZmqTextSink(GstBase.BaseSink):
         """ Set the location property """
         if prop.name == "location":
             self.location = value
+        elif prop.name == "room":
+            self.room = value
         else:
             raise AttributeError('unknown property %s' % prop.name)
 
     def do_render(self, buffer):
         """ Render the buffer"""
+        if self.socket is None:
+            return
         Gst.info("timestamp(buffer):%s" % (Gst.TIME_ARGS(buffer.pts)))
         text = buffer.extract_dup(0, buffer.get_size())
-        zmq.send_string(f"{platform.node()} {text.decode()}")
+        self.socket.send_string(f"{self.room} {text.decode()}")
         return Gst.FlowReturn.OK
 
 GObject.type_register(ZmqTextSink)
